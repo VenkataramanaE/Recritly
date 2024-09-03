@@ -3,7 +3,6 @@ package net.javaguides.springboot.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,7 +29,7 @@ public class SecurityConfiguration {
         http.csrf().disable()
             .authorizeHttpRequests(authorize -> 
                 authorize
-                    .requestMatchers("/registration**").permitAll()
+                    .requestMatchers("/registration/**").permitAll()
                     .requestMatchers("/js/**").permitAll()
                     .requestMatchers("/css/**").permitAll()
                     .requestMatchers("/img/**").permitAll()
@@ -39,11 +38,13 @@ public class SecurityConfiguration {
             .formLogin(form -> 
                 form
                     .loginPage("/login")
+                    .defaultSuccessUrl("/login", true)  // Adjust the success URL as needed
                     .permitAll()
             )
             .logout(logout -> 
                 logout
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login?logout")
                     .permitAll()
             );
         return http.build();
